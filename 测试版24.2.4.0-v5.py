@@ -1,6 +1,5 @@
 import time
 import logging
-
 import uiautomator2 as u2
 import adbutils
 import re
@@ -9,7 +8,7 @@ import sys
 
 
 # # 配置日志记录
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class ViberAutoGroups:
     line_number = 1  # 默认读取第 1 行
@@ -19,12 +18,11 @@ class ViberAutoGroups:
         self.device_id = device_id
         self.device = u2.connect(device_id)
         if not self.device:
-            logging.error(f"当前行：{self.getLine()};无法连接到设备 {device_id}，请检查 USB 连接或 WiFi ADB 状态。")
+            logging.error(f"无法连接到设备 {device_id}，请检查 USB 连接或 WiFi ADB 状态。")
             return
 
         #self.debug = debug
         self.message_sent_status = 1  # 默认消息状态为 1（成功）
-
         self.processed_packages = set()
         self.phone_counter = 0  # 记录输入号码的次数
 
@@ -43,7 +41,91 @@ class ViberAutoGroups:
                 for pkg in self.processed_packages:
                     f.write(pkg + '\n')
         except Exception as e:
-            logging.error(f"当前行：{self.getLine()};保存已处理的包名失败: {e}")
+            logging.error(f"保存已处理的包名失败: {e}")
+
+    # 找到对应dp插件包 并打开
+    def find_and_open_dkplugin_package(self):
+        """查找并启动未处理的 dkplugin 相关应用"""
+        shell_response = self.device.shell("pm list packages")
+        # 适配不同版本的 uiautomator2
+        output_str = shell_response.output if hasattr(shell_response, "output") else str(shell_response)
+        dkplugin_packages = {line.split(":")[-1] for line in output_str.split("\n") if 'dkplugin' in line}
+        dkplugin_packages -= self.processed_packages  # 过滤已处理的包
+        if dkplugin_packages:
+            self.first_pkg = list(dkplugin_packages)[0]
+            logging.info(f"打开应用: {self.first_pkg}")
+            self.device.app_start(self.first_pkg)
+            time.sleep(3)
+            self.processed_packages.add(self.first_pkg)
+            time.sleep(2)
+            self.save_processed_packages()
+            return True
+        else:
+            logging.info("没有找到新的 dkplugin 应用")
+            sys.exit()
+
+    def close_current_app(self):
+        """关闭当前运行的应用"""
+        try:
+            current_package = self.device.app_current().get("package", "")
+            if current_package:
+                logging.info(f" 关闭应用: {current_package}")
+                self.device.app_stop(current_package)  # 关闭应用
+                time.sleep(2)  # 确保应用完全退出
+            else:
+                logging.warning(f" 未找到当前运行的应用")
+        except Exception as e:
+            logging.error(f" 关闭应用失败: {e}")
+
+    def check_group_entry(self):
+        """
+        点击 'formattedMessageView' (群链接)，然后检查是否进入群组界面。
+        如果未检测到 'menu_viber_call'，则关闭应用并重新执行。
+        """
+        logging.info("尝试点击群链接...")
+
+        # 尝试点击群链接
+        if self.click_if_exists("com.viber.voip:id/formattedMessageView"):
+            time.sleep(2)  # 等待群组界面加载
+
+            # 检测是否成功进入群组
+            if self.device(resourceId="com.viber.voip:id/menu_viber_call").exists(timeout=3):
+                logging.info("成功进入群组界面")
+                return True  # 进入成功，继续后续操作
+            else:
+                logging.warning("点击群链接后未检测到 'menu_viber_call'，点击无效，关闭应用并重新执行")
+                self.close_current_app()  # 关闭当前应用
+                time.sleep(2)
+                self.device.press("home")  # 返回桌面
+                self.run()  # 重新执行流程
+                return False  # 终止当前操作
+        else:
+            logging.warning("未找到群链接 'formattedMessageView'")
+            return False  # 终止当前操作
+
+    def check_notepad_entry(self):
+        """
+        点击 '我的便签'，然后检查是否成功进入便签界面。
+        如果未检测到 'toolbar'，则关闭应用并重新执行。
+        """
+        text_list = ["我的便签", "我的記事", "Mes Notes"]  # 兼容多语言
+        logging.info("尝试点击 '我的便签'...")
+
+        if self.click_if_exists2("com.viber.voip:id/titleView", 5, text_list):
+            time.sleep(2)  # 等待页面加载
+            # 检测是否成功进入便签界面
+            if self.device(resourceId="com.viber.voip:id/toolbar").exists(timeout=3):
+                logging.info("成功进入 '我的便签'")
+                return True  # 进入成功
+            else:
+                logging.warning("点击 '我的便签' 后未检测到 'toolbar'，点击无效，关闭应用并重新执行")
+                self.close_current_app()  # 关闭当前应用
+                time.sleep(2)
+                self.device.press("home")  # 返回桌面
+                self.run()  # 重新执行流程
+        else:
+            logging.warning("未找到 '我的便签'")
+            return False  # 终止当前操作
 
     # 如果id存在，则延迟5秒 点击
     def click_if_exists(self, resource_id, timeout=3):
@@ -60,9 +142,9 @@ class ViberAutoGroups:
             element_text = element.get_text() or "无文本"
 
             element.click()
-            logging.info(f"当前行：{self.getLine()};位于{current_package}包，点击了 {resource_id}，文本：{element_text}")
+            logging.info(f"位于{current_package}包，点击了 {resource_id}，文本：{element_text}")
             return True
-        logging.warning(f"当前行：{self.getLine()};位于{current_package}包，未找到 {resource_id}")
+        logging.warning(f"位于{current_package}包，未找到 {resource_id}")
         return False
 
     # 重复id的时候，输入索引
@@ -75,12 +157,15 @@ class ViberAutoGroups:
         for text in text_list:
             self.click_text_view_if_exists(resource_id, text)
 
+
+
     def click_if_exists3(self, resource_id, timeout=5, check_progress=False):
         """
         等待并点击某个 UI 元素。
         如果 `check_progress=True`，则点击后等待 5 秒，并检查 `com.viber.voip:id/progress` 是否存在。
         如果 `com.viber.voip:id/progress` 存在，则判定账号异常。
         """
+
         current_package = self.device.app_current().get('package', 'Unknown')
 
         element = self.device(resourceId=resource_id)
@@ -91,21 +176,21 @@ class ViberAutoGroups:
             element_text = element.get_text() or "无文本"
 
             element.click()
-            logging.info(f"当前行：{self.getLine()}; 位于 {current_package} 包，点击了 {resource_id}，文本：{element_text}")
+            logging.info(f" 位于 {current_package} 包，点击了 {resource_id}，文本：{element_text}")
 
             # 如果启用了 `check_progress`，点击后等待 5 秒，并检查进度条
             if check_progress:
                 time.sleep(5)  # 等待 5 秒，确保 UI 更新
 
                 if self.device(resourceId="com.viber.voip:id/progress").exists(timeout=5):
-                    logging.warning(f"当前行：{self.getLine()}; 发现进度条 (com.viber.voip:id/progress)，判定账号异常")
+                    logging.warning(f" 发现进度条 (com.viber.voip:id/progress)，判定账号异常")
                     self.close_current_app()  # 关闭应用
                     self.device.press("home")  # 回到主界面
                     self.run()  # 重新执行run
                 else:
-                    logging.info(f"当前行：{self.getLine()}; 账号状态正常")
+                    logging.info(f" 账号状态正常")
             return True
-        logging.warning(f"当前行：{self.getLine()}; 位于 {current_package} 包，未找到 {resource_id}")
+        logging.warning(f" 位于 {current_package} 包，未找到 {resource_id}")
         return False
 
     def click_text_view_if_exists(self, id, text, timeout=5):
@@ -128,67 +213,26 @@ class ViberAutoGroups:
             self.device.press("home")   #回到主界面
             self.run()   #重新执行run
 
-
-
-    # 找到对应dp插件包 并打开
-    def find_and_open_dkplugin_package(self):
-
-        """查找并启动未处理的 dkplugin 相关应用"""
-        shell_response = self.device.shell("pm list packages")
-
-        # 适配不同版本的 uiautomator2
-        output_str = shell_response.output if hasattr(shell_response, "output") else str(shell_response)
-
-        dkplugin_packages = {line.split(":")[-1] for line in output_str.split("\n") if 'dkplugin' in line}
-        dkplugin_packages -= self.processed_packages  # 过滤已处理的包
-
-        if dkplugin_packages:
-            self.first_pkg = list(dkplugin_packages)[0]
-            logging.info(f"当前行：{self.getLine()};打开应用: {self.first_pkg}")
-            self.device.app_start(self.first_pkg)
-            time.sleep(3)
-            self.processed_packages.add(self.first_pkg)
-            time.sleep(2)
-            self.save_processed_packages()
-            return True
-        else:
-            logging.info("当前行：{self.getLine()};没有找到新的 dkplugin 应用")
-            return False
-
-    def close_current_app(self):
-        """关闭当前运行的应用"""
-        try:
-            current_package = self.device.app_current().get("package", "")
-            if current_package:
-                logging.info(f"当前行：{self.getLine()}; 关闭应用: {current_package}")
-                self.device.app_stop(current_package)  # 关闭应用
-                time.sleep(2)  # 确保应用完全退出
-            else:
-                logging.warning(f"当前行：{self.getLine()}; 未找到当前运行的应用")
-        except Exception as e:
-            logging.error(f"当前行：{self.getLine()}; 关闭应用失败: {e}")
-
     def run(self):
         self.phone_counter = 0
         self.processed_packages = self.load_processed_packages()
-        #
-        # if not self.find_and_open_dkplugin_package():
-        #     return
+        if not self.find_and_open_dkplugin_package():
+            return
 
         if self.detecting_account():
             logging.info("账号正常")
             self.click_if_exists("ix4s")  # 可能会出现广告
             self.click_if_exists("com.viber.voip:id/bottom_nav_tab_4")  # 点击更多
             self.click_if_exists("ix4s")    # 可能会出现广告
-            text_list = ["我的便签", "我的記事", "Mes Notes"]            # 便签：多个语言
-            self.click_if_exists2("com.viber.voip:id/titleView", 5, text_list)  # 点击“我的记事”
+            self.check_notepad_entry() #点击"我的便签", "我的記事", "Mes Notes"
             self.notConnected() # 判断未连接情况
             self.click_if_exists("com.viber.voip:id/close")  # 輕觸该按钮，即可关闭提醒
             time.sleep(2)
             self.send_link_text("link.txt") # 输入群链接
             # 避免在便签，点击出右侧栏
             time.sleep(2)
-            self.click_if_exists("com.viber.voip:id/formattedMessageView") # 点击群链接
+            # self.click_if_exists("com.viber.voip:id/formattedMessageView") # 点击群链接
+            self.check_group_entry()         # 点击群链接，如果点击不成功则重新执行run
             self.click_if_exists("com.viber.voip:id/toolbar") # 点击群名字
             self.checkMembersCount()    # 检测群人数
             self.click_if_exists("com.viber.voip:id/icon") # 邀请参与者
@@ -197,26 +241,24 @@ class ViberAutoGroups:
         else:
             logging.warning("检测到账号异常，返回桌面并切换应用")
             time.sleep(5)
-            # self.close_current_app()  # 关闭应用
+            self.close_current_app()  # 关闭应用
             self.device.press("home")  #返回桌面
-            if self.find_and_open_dkplugin_package():   #打开新应用
-                self.run()      #重新执行循环
+            self.run()      #重新执行循环
 
     def detecting_account(self):
         """检测当前是否处于正常账号状态"""
         time.sleep(3)
         if self.device(resourceId="com.viber.voip:id/remote_banner_button").exists(timeout=2):
-            logging.warning(f"当前行：{self.getLine()};检测到账号异常")
+            logging.warning(f"检测到账号异常")
             return False
         elif self.device(resourceId="com.viber.voip:id/activity_home_root").exists(timeout=2):
-            logging.info(f"当前行：{self.getLine()};已在 Viber 主界面")
+            logging.info(f"已在 Viber 主界面")
             return True
         elif self.device(resourceId="com.viber.voip:id/buttonMaybeLater").exists(timeout=2):
-            logging.info(f"当前行：{self.getLine()};检测到 '稍后' 按钮，点击继续")
+            logging.info(f"检测到 '稍后' 按钮，点击继续")
             self.device(resourceId="com.viber.voip:id/buttonMaybeLater").click()
-
         else:
-            logging.warning(f"当前行：{self.getLine()};未检测到已知状态，可能账号异常")
+            logging.warning(f"未检测到已知状态，可能账号异常")
             return False
 
     # def notepadCheckAccountStatus(self):
@@ -229,18 +271,16 @@ class ViberAutoGroups:
     #         icon.screenshot()  # 截取图标 ‌二进制数据
     #         # icon.screenshot("icon.png")
     #     else:
-    #         logging.error(f"当前行：{self.getLine()};没找到图标")
-
+    #         logging.error(f"没找到图标")
 
     def enter_phone_numbers(self, input_file, used_file):
         """输入电话号码，并检测群组人数，已使用的号码从 input_file 删除"""
         try:
             with open(input_file, "r", encoding="utf-8") as f:
                 phone_numbers = [line.strip() for line in f.readlines() if line.strip()]
-
             if not phone_numbers:
-                logging.warning(f"当前行：{self.getLine()};电话号码列表为空")
-                self.click_if_exists("com.viber.voip:id/new_num_layout") # 确定拉人
+                logging.warning(f" 电话号码列表为空")
+                self.click_if_exists("com.viber.voip:id/new_num_layout")  # 确定拉人
                 self.click_if_exists("android:id/button1")
                 sys.exit()
 
@@ -248,103 +288,121 @@ class ViberAutoGroups:
             with open(used_file, "w", encoding="utf-8") as used_f:
                 used_f.truncate(0)
 
+            error_count = 0  # 记录连续出现弹窗的次数
+            self.phone_counter = 0  # 初始化号码计数器
+
             # 遍历所有电话号码
             for idx, phone in enumerate(phone_numbers):
-                # 当phone.txt没号码的时候，点击完成
-                with open(input_file, 'r', encoding='utf-8') as f:
-                    first_line = f.readline()
-                    if first_line.strip():  # 读取第一行并去除空格、换行符
-                        print("文件有内容")
-                        self.click_if_exists("android:id/button1")
-                        if self.device(resourceId="com.viber.voip:id/progress").exists(timeout=5):
-                            logging.warning(
-                                f"当前行：{self.getLine()}; 发现进度条 (com.viber.voip:id/progress)，判定账号异常")
-                            self.close_current_app()  # 关闭应用
-                            self.device.press("home")  # 回到主界面
-                            self.run()  # 重新执行run
-                        else:
-                            logging.info(f"当前行：{self.getLine()}; 账号状态正常")
-                    else:
-                        print("文件为空")
-                        self.click_if_exists3("com.viber.voip:id/menu_done")
-                        self.click_if_exists("android:id/button1")
-                        # 终止程序
-                        sys.exit()
-
                 phone_input = self.device(resourceId="com.viber.voip:id/add_recipients_search_field")
 
-                error_count = 0  # 记录连续出现弹窗的次数
+                # **如果找不到输入框，暂停输入，并持续检测 alertTitle**
+                check_time = 0  # 记录等待时间
+                while not phone_input.exists(timeout=2):
+                    logging.warning(f" 找不到输入框，暂停输入电话号码")
 
-                for idx, phone in enumerate(phone_numbers):
-                    phone_input = self.device(resourceId="com.viber.voip:id/add_recipients_search_field")
+                    # **持续检测是否出现 `alertTitle`**
+                    if self.device(resourceId="com.viber.voip:id/alertTitle").exists(timeout=2):
+                        logging.warning(f" 检测到 `alertTitle`，点击确认")
+                        self.click_if_exists("android:id/button1")  # 点击确认
+                        time.sleep(2)  # 等待 UI 更新
+                    check_time += 2  # 计时
+                    # **如果超过 30 秒仍然没有输入框，执行异常处理**
+                    if check_time >= 30:
+                        logging.error(f" 超过 30 秒未找到输入框，执行异常处理")
+                        self.close_current_app()  # 关闭应用
+                        time.sleep(2)
+                        self.device.press("home")  # 返回桌面
+                        self.run()  # 重新执行流程
+                # # **恢复输入号码**
+                # phone_input.click()
+                # time.sleep(0.2)
+                # phone_input.set_text(phone)
+                # logging.info(f" 输入电话号码: {phone}")
 
-                    if phone_input.exists(timeout=5):
-                        phone_input.click()
-                        time.sleep(0.2)
-                        phone_input.set_text(phone)
-                        logging.info(f"当前行：{self.getLine()}; 输入电话号码: {phone}")
+                if phone_input.exists(timeout=5):
+                    phone_input.click()
+                    time.sleep(0.2)
+                    phone_input.set_text(phone)
+                    logging.info(f" 输入电话号码: {phone}")
 
-                        # 记录号码到 '已使用的号码.txt'
-                        with open(used_file, "a", encoding="utf-8") as used_f:
-                            used_f.write(phone + '\n')
+                    # 记录号码到 '已使用的号码.txt'
+                    with open(used_file, "a", encoding="utf-8") as used_f:
+                        used_f.write(phone + '\n')
 
-                        # 从原始文件中移除当前号码
-                        with open(input_file, "r+", encoding="utf-8") as f:
-                            lines = f.readlines()
-                            f.seek(0)
-                            f.truncate()
-                            for line in lines:
-                                if line.strip() != phone:
-                                    f.write(line)
+                    # 从原始文件中移除当前号码
+                    with open(input_file, "r+", encoding="utf-8") as f:
+                        lines = f.readlines()
+                        f.seek(0)
+                        f.truncate()
+                        for line in lines:
+                            if line.strip() != phone:
+                                f.write(line)
 
-                        time.sleep(0.2)
-                        self.click_if_exists("com.viber.voip:id/new_num_layout")
-
-                        # 检测是否出现弹窗 "android:id/button1"
-                        if self.device(resourceId="android:id/button1").exists(timeout=0.5):
-                            logging.warning(f"当前行：{self.getLine()}; 号码 {phone} 存在问题，计数 {error_count + 1}/3")
+                    time.sleep(0.2)
+                    self.click_if_exists("com.viber.voip:id/new_num_layout")
+                    time.sleep(2)
+                    if self.device(resourceId="com.viber.voip:id/progress").exists(timeout=2):
+                        logging.warning("检测到转圈，继续检查“不是Viber号码")
+                        # **检测是否出现弹窗 "com.viber.voip:id/alertTitle"**
+                        if self.device(resourceId="com.viber.voip:id/alertTitle").exists(timeout=15):
+                            logging.warning(f" 号码 {phone} 存在问题，计数 {error_count + 1}/3")
                             self.click_if_exists("android:id/button1")  # 点击确认
-                            error_count += 1  # 增加错误计数
+                            error_count += 1  # **错误计数 +1**
                         else:
-                            error_count = 0  # 如果没有出现弹窗，则归零
-
-                        # 如果连续 3 次都出现弹窗
-                        if error_count >= 3:
-                            logging.error(f"当前行：{self.getLine()}; 连续 3 个号码输入错误，执行异常处理")
-                            self.close_current_app()  # 关闭应用
-                            time.sleep(2)
-                            self.device.press("home")  # 返回桌面
-                            if self.find_and_open_dkplugin_package():  # 重新打开新的应用
-                                self.run()  # 重新执行流程
-                            return  # 终止当前循环，防止继续输入错误号码
+                            error_count = 0  # **如果号码有效，则错误计数归零**
+                            logging.info(f"号码有效，当前号码{phone}")
                     else:
-                        logging.warning(f"当前行：{self.getLine()}; 找不到输入框，跳过 {phone}")
+                        logging.info("未检测到转圈，跳过 alertTitle 检测")
 
-                    self.click_if_exists("com.viber.voip:id/top_2_frame")  # 继续下一个步骤
+                    # **如果连续 3 次错误**
+                    if error_count >= 3:
+                        logging.error(f" 连续 3 个号码输入错误，执行异常处理")
+                        self.close_current_app()  # 关闭应用
+                        time.sleep(2)
+                        self.device.press("home")  # 返回桌面
+                        self.run()  # 重新执行流程
+                        return  # **终止当前流程**
 
-                # 每输入 15 个号码后，点击完成并进行确认
-                self.phone_counter += 1
-                if self.phone_counter >= 15:
-                    # 点击完成并确认
-                    if self.click_if_exists3("com.viber.voip:id/menu_done"):   #点击确定
-                        time.sleep(1)  # 等待界面更新
-                        self.click_if_exists("android:id/button1")
-                        self.phone_counter = 0  # 计数器归零
+                    # **增加号码计数**
+                    self.phone_counter += 1
+                    logging.info(f" 当前已输入号码: {self.phone_counter}/15")
 
-                        # 确保回到正确的界面，继续拉人
-                        time.sleep(2)  # 稍作等待，确保页面刷新
+                    # **每输入 15 个号码后，点击完成并进行确认**
+                    if self.phone_counter >= 15:
+                        logging.info(" 达到 15 个号码，点击完成按钮")
+                        if self.click_if_exists3("com.viber.voip:id/menu_done"):  # **点击完成**
+                            time.sleep(2)  # **等待界面更新**
+                            # **检查 `android:id/button1` 和 `com.viber.voip:id/body`**
+                            if self.device(resourceId="android:id/button1").exists(timeout=2):
+                                logging.info("检测到确认按钮 'android:id/button1'，点击继续")
+                                self.click_if_exists("android:id/button1")  # **确认**
+                            elif self.device(resourceId="com.viber.voip:id/body").exists(timeout=2):
+                                logging.error("检测到 'com.viber.voip:id/body'，账号异常，执行异常处理")
+                                self.close_current_app()  # **关闭应用**
+                                time.sleep(2)
+                                self.device.press("home")  # **返回桌面**
+                                self.run()  # **重新执行流程**
+                                return  # **终止当前流程**
 
-                        self.checkMembersCount()    # 检测群人数
+                            self.phone_counter = 0  # **重置计数器**
+                            time.sleep(2)  # **确保页面刷新**
+                            self.checkMembersCount()  # **检测群人数**
 
-                        if self.click_if_exists("com.viber.voip:id/icon"):
-                            logging.info("成功返回到群管理界面，继续拉群")
-                        else:
-                            logging.warning("未能找到 'com.viber.voip:id/icon'，可能需要手动调整")
+                            if self.click_if_exists("com.viber.voip:id/icon"):
+                                logging.info("成功返回到群管理界面，继续拉群")
+                            else:
+                                logging.warning("未能找到 'com.viber.voip:id/icon'，可能需要手动调整")
 
-            logging.info(f"当前行：{self.getLine()};已处理的号码保存到 {used_file}")
+                else:
+                    logging.warning(f" 找不到输入框，跳过 {phone}")
+
+                self.click_if_exists("com.viber.voip:id/top_2_frame")  # 继续下一个步骤
+
+            logging.info(f" 已处理的号码保存到 {used_file}")
+
         except Exception as e:
-            print(f"错误内容：{e}")
-            # logging.error(f"当前行：{self.getLine()};处理电话号码失败: {e}")
+            logging.error(f" 处理电话号码失败: {e}")
+            sys.exit()
 
     # # 判断有没有200个成员
     # def checkMembersCount(self):
@@ -375,7 +433,6 @@ class ViberAutoGroups:
                         global line_number
                         self.line_number += 1
                         logging.info("群成员数已达到 200，返回桌面并打开下一个包")
-
                         # 返回桌面
                         time.sleep(2)
                         self.close_current_app()  # 关闭应用
@@ -385,11 +442,14 @@ class ViberAutoGroups:
 
                 else:
                     logging.warning("未能解析群成员数，文本格式可能不正确")
+                    sys.exit()
 
             else:
                 logging.warning("未找到群成员数文本元素")
+                sys.exit()
         except Exception as e:
             logging.error(f"检查群成员数时发生错误: {e}")
+            sys.exit()
 
     # 获取当前行
     def getLine(self):
@@ -432,16 +492,13 @@ class ViberAutoGroups:
                         '//*[@resource-id="com.viber.voip:id/conversation_recycler_view"]/*[last()]//*[@resource-id="com.viber.voip:id/myNotesCheckView"]')
 
                     if element.exists:
-                        logging.info("Found myNotesCheckView")
+                        logging.info("链接发送至记事本成功")
 
                     else:
-                        logging.warning("myNotesCheckView not found in the last child")
+                        logging.warning("链接发送至记事本失败，账号异常，正在关闭应用")
                         self.close_current_app()  # 关闭应用
                         time.sleep(2)
-                        self.device.press("home")
-                        time.sleep(2)
                         self.run()
-                        time.sleep(2)
                         return False
             else:
                 logging.warning(f"当前行：{self.line_number}; 未找到输入框")
@@ -475,3 +532,9 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+    # 新增check_group_entry方法，检测是否点击群链接成功
+    # 新增check_notepad_entry方法，检查点击我的便签是否成功
+    # 修改 checkMembersCount方法。连续 3 个号码输入错误，执行异常处理(问题处于解决中)
