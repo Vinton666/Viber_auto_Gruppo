@@ -106,7 +106,7 @@ class ViberAutoGroups:
     def check_notepad_entry(self):
         """
         点击 '我的便签'，然后检查是否成功进入便签界面。
-        如果未检测到 'toolbar'，则关闭应用并重新执行。
+        如果未检测到 'send_text'，则关闭应用并重新执行。
         """
         text_list = ["我的便签", "我的記事", "Mes Notes"]  # 兼容多语言
         logging.info("尝试点击 '我的便签'...")
@@ -114,11 +114,11 @@ class ViberAutoGroups:
         if self.click_if_exists2("com.viber.voip:id/titleView", 5, text_list):
             time.sleep(2)  # 等待页面加载
             # 检测是否成功进入便签界面
-            if self.device(resourceId="com.viber.voip:id/toolbar").exists(timeout=3):
+            if self.device(resourceId="com.viber.voip:id/send_text").exists(timeout=3):
                 logging.info("成功进入 '我的便签'")
                 return True  # 进入成功
             else:
-                logging.warning("点击 '我的便签' 后未检测到 'toolbar'，点击无效，关闭应用并重新执行")
+                logging.warning("点击 '我的便签' 后未检测到 'send_text'，点击无效，关闭应用并重新执行")
                 self.close_current_app()  # 关闭当前应用
                 time.sleep(2)
                 self.device.press("home")  # 返回桌面
@@ -155,7 +155,8 @@ class ViberAutoGroups:
 
 
         for text in text_list:
-            self.click_text_view_if_exists(resource_id, text)
+           if self.click_text_view_if_exists(resource_id, text):
+               return True
 
 
 
@@ -330,11 +331,6 @@ class ViberAutoGroups:
                         time.sleep(2)
                         self.device.press("home")  # 返回桌面
                         self.run()  # 重新执行流程
-                # # **恢复输入号码**
-                # phone_input.click()
-                # time.sleep(0.2)
-                # phone_input.set_text(phone)
-                # logging.info(f" 输入电话号码: {phone}")
 
                 if phone_input.exists(timeout=5):
                     phone_input.click()
@@ -384,7 +380,7 @@ class ViberAutoGroups:
                     self.phone_counter += 1
                     logging.info(f" 当前已输入号码: {self.phone_counter}/{num_to_input}")
 
-                    # **每输入 15 个号码后，点击完成并进行确认**
+                    # **每输入 N 个号码后，点击完成并进行确认**
                     if self.phone_counter >= num_to_input:
                         logging.info("达到用户设定的号码数量，点击完成按钮")
                         if self.click_if_exists3("com.viber.voip:id/menu_done"):  # **点击完成**
