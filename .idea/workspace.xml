@@ -4,12 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="614c5e1c-48e0-4404-ae84-3988ee83e969" name="更改" comment="增加手动输入拉多少人功能">
-      <change afterPath="$PROJECT_DIR$/123456" afterDir="false" />
+    <list default="true" id="614c5e1c-48e0-4404-ae84-3988ee83e969" name="更改" comment="一次性拉人">
       <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/123.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/123456" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Viber一次性账号拉人.py" beforeDir="false" afterPath="$PROJECT_DIR$/Viber一次性账号拉人.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/link.txt" beforeDir="false" afterPath="$PROJECT_DIR$/link.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phone.txt" beforeDir="false" afterPath="$PROJECT_DIR$/phone.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/processed_packages.txt" beforeDir="false" afterPath="$PROJECT_DIR$/processed_packages.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/已使用的号码.txt" beforeDir="false" afterPath="$PROJECT_DIR$/已使用的号码.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/测试版24.2.4.0-V6.py" beforeDir="false" afterPath="$PROJECT_DIR$/测试版24.2.4.0-V6.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,16 +28,16 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "history": [
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;history&quot;: [
     {
-      "assignee": "Vinton666"
+      &quot;assignee&quot;: &quot;Vinton666&quot;
     }
   ],
-  "lastFilter": {
-    "assignee": "Vinton666"
+  &quot;lastFilter&quot;: {
+    &quot;assignee&quot;: &quot;Vinton666&quot;
   }
-}]]></component>
+}</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/Vinton666/Viber_auto_Gruppo.git&quot;,
@@ -54,9 +58,12 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Node.js.网易云.js.executor": "Run",
+    "Python.12.executor": "Run",
     "Python.1测试24.2.4.2.0.executor": "Run",
+    "Python.Viber一次性账号拉人.executor": "Run",
     "Python.main.executor": "Debug",
     "Python.qun.executor": "Run",
+    "Python.测试版24.2.4.0-V6.executor": "Run",
     "Python.测试版24.2.4.0-v2.executor": "Run",
     "Python.测试版24.2.4.0-v3.executor": "Run",
     "Python.测试版24.2.4.0-v4.executor": "Run",
@@ -72,7 +79,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pathVariables",
+    "settings.editor.selected.configurable": "preferences.customizations",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -81,6 +88,9 @@
     ]
   }
 }]]></component>
+  <component name="Push.Settings">
+    <option name="SHOW_DETAILS_PANEL" value="false" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Administrator\Desktop\123" />
@@ -109,7 +119,8 @@
       <workItem from="1741968118335" duration="723000" />
       <workItem from="1741969767437" duration="160000" />
       <workItem from="1741969933975" duration="4635000" />
-      <workItem from="1742209546660" duration="5043000" />
+      <workItem from="1742209546660" duration="5290000" />
+      <workItem from="1742216382183" duration="23995000" />
     </task>
     <task id="LOCAL-00001" summary="增加手动输入拉多少人功能">
       <option name="closed" value="true" />
@@ -119,7 +130,39 @@
       <option name="project" value="LOCAL" />
       <updated>1742213972132</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="1">
+      <option name="closed" value="true" />
+      <created>1742216270315</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1742216270315</updated>
+    </task>
+    <task id="LOCAL-00003" summary="1">
+      <option name="closed" value="true" />
+      <created>1742216297715</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1742216297715</updated>
+    </task>
+    <task id="LOCAL-00004" summary="1">
+      <option name="closed" value="true" />
+      <created>1742216342754</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1742216342754</updated>
+    </task>
+    <task id="LOCAL-00005" summary="一次性拉人">
+      <option name="closed" value="true" />
+      <created>1742231277114</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1742231277114</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -130,7 +173,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -138,13 +193,18 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="增加手动输入拉多少人功能" />
-    <option name="LAST_COMMIT_MESSAGE" value="增加手动输入拉多少人功能" />
+    <MESSAGE value="1" />
+    <MESSAGE value="一次性拉人" />
+    <option name="LAST_COMMIT_MESSAGE" value="一次性拉人" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/24_2_4_0_v2_py$24_2_4_0_v3.coverage" NAME="测试版24.2.4.0-v3 覆盖结果" MODIFIED="1741604897988" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/24_2_4_0_v5_py$24_2_4_0_.coverage" NAME="测试版24.2.4.0-终极版 覆盖结果" MODIFIED="1741975997757" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/24_2_4_0_v5_py$24_2_4_0_v5.coverage" NAME="测试版24.2.4.0-v5 覆盖结果" MODIFIED="1741975808647" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/24_2_4_0_V6_py$24_2_4_0_V6.coverage" NAME="测试版24.2.4.0-V6 覆盖结果" MODIFIED="1742231067614" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/24_2_4_0_V6_py$Viber.coverage" NAME="Viber一次性账号拉人 覆盖结果" MODIFIED="1742303433498" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/24_2_4_0_v4_py$24_2_4_0_v4.coverage" NAME="测试版24.2.4.0-v4 覆盖结果" MODIFIED="1741629791806" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/24_2_4_0_V6_py$12.coverage" NAME="12 覆盖结果" MODIFIED="1742303916201" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/24_2_4_0_v2_py$24_2_4_0_.coverage" NAME="测试版24.2.4.0-终极版 覆盖结果" MODIFIED="1741629705061" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/123$24_2_4_0.coverage" NAME="测试版24.2.4.0 覆盖结果" MODIFIED="1741370539458" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/123$qun.coverage" NAME="qun 覆盖结果" MODIFIED="1741205379941" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
