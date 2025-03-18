@@ -5,10 +5,20 @@ import adbutils
 import re
 import inspect
 import sys
+import  os
 
 
 # # 配置日志记录
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+app_name = os.path.splitext(os.path.basename(__file__))[0]
+log_filename = f"{app_name}_{time.strftime('%Y-%m-%d_%H-%M-%S')}.log"
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler(log_filename, encoding='utf-8'),  # 输出到文件
+        logging.StreamHandler()  # 同时输出到控制台
+    ]
+)
 
 class ViberAutoGroups:
     line_number = 1  # 默认读取第 1 行
