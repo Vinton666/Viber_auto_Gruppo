@@ -5,6 +5,7 @@ import adbutils
 import re
 import inspect
 import sys
+import  os
 
 
 # # 配置日志记录
@@ -21,6 +22,7 @@ logging.basicConfig(
 
 class ViberAutoGroups:
     line_number = 1  # 默认读取第 1 行
+    NUM_TO_INPUT = None  # 默认未初始化
 
     # 初始化，链接手机
     def __init__(self, device_id, debug=False):
@@ -294,27 +296,7 @@ class ViberAutoGroups:
                 self.click_if_exists("android:id/button1")
                 sys.exit()
 
-            # 清空已使用号码文件
-            with open(used_file, "w", encoding="utf-8") as used_f:
-                used_f.truncate(0)
-
-                # **用户输入想要输入的电话号码数量，默认为 15**
-            while True:
-                user_input = input("\n请输入要输入的电话号码数量（默认 15，直接回车可跳过）: ").strip()
-                if user_input == "":
-                    num_to_input = 15  # **用户不输入时，默认为 15**
-                    break
-                try:
-                    num_to_input = int(user_input)
-                    if num_to_input > 0:
-                        break
-                    else:
-                        print("❌ 请输入大于 0 的数字")
-                except ValueError:
-                    print("❌ 请输入有效的数字")
-
-            logging.info(f"用户设置的号码输入数量: {num_to_input}")
-
+            invalid_numbers = []  # **用于存储连续 3 个无效号码**
             error_count = 0  # 记录连续出现弹窗的次数
             self.phone_counter = 0  # 初始化号码计数器
 
@@ -341,7 +323,7 @@ class ViberAutoGroups:
                         self.device.press("home")  # 返回桌面
                         self.run()  # 重新执行流程
 
-                if phone_input.exists(timeout=5):
+                if phone_input.exists(timeout=3):
                     phone_input.click()
                     time.sleep(0.2)
                     phone_input.set_text(phone)
@@ -362,7 +344,7 @@ class ViberAutoGroups:
 
                     time.sleep(0.2)
                     self.click_if_exists("com.viber.voip:id/new_num_layout")
-                    time.sleep(2)
+                    time.sleep(1)
                     if self.device(resourceId="com.viber.voip:id/progress").exists(timeout=2):
                         logging.warning("检测到转圈，继续检查“不是Viber号码")
                         # **检测是否出现弹窗 "com.viber.voip:id/alertTitle"**
@@ -379,18 +361,21 @@ class ViberAutoGroups:
                     # **如果连续 3 次错误**
                     if error_count >= 3:
                         logging.error(f" 连续 3 个号码输入错误，执行异常处理")
+                        with open("无效号码.txt", "a", encoding="utf-8") as invalid_file:
+                            for num in invalid_numbers:
+                                invalid_file.write(num + "\n")  # **记录无效号码**
+                        logging.info("❌ 无效号码已保存到 '无效号码.txt'")
                         self.close_current_app()  # 关闭应用
                         time.sleep(2)
                         self.device.press("home")  # 返回桌面
                         self.run()  # 重新执行流程
-                        return  # **终止当前流程**
 
                     # **增加号码计数**
                     self.phone_counter += 1
-                    logging.info(f" 当前已输入号码: {self.phone_counter}/{num_to_input}")
+                    logging.info(f" 当前已输入号码: {self.phone_counter}/{NUM_TO_INPUT}")
 
                     # **每输入 N 个号码后，点击完成并进行确认**
-                    if self.phone_counter >= num_to_input:
+                    if self.phone_counter >= NUM_TO_INPUT:
                         logging.info("达到用户设定的号码数量，点击完成按钮")
                         if self.click_if_exists3("com.viber.voip:id/menu_done"):  # **点击完成**
                             time.sleep(2)  # **等待界面更新**
@@ -409,30 +394,17 @@ class ViberAutoGroups:
                             self.phone_counter = 0  # **重置计数器**
                             time.sleep(2)  # **确保页面刷新**
                             self.checkMembersCount()  # **检测群人数**
-
                             if self.click_if_exists("com.viber.voip:id/icon"):
                                 logging.info("成功返回到群管理界面，继续拉群")
                             else:
                                 logging.warning("未能找到 'com.viber.voip:id/icon'，可能需要手动调整")
-
                 else:
                     logging.warning(f" 找不到输入框，跳过 {phone}")
-
                 self.click_if_exists("com.viber.voip:id/top_2_frame")  # 继续下一个步骤
-
             logging.info(f" 已处理的号码保存到 {used_file}")
-
         except Exception as e:
             logging.error(f" 处理电话号码失败: {e}")
             sys.exit()
-
-    # # 判断有没有200个成员
-    # def checkMembersCount(self):
-    #     # 获取指定id的文本；然后根据正则获取数字；判断有没有200个成员；满足200就退出程序
-    #     numbePeopleText = self.device(resourceId="com.viber.voip:id/startText").text
-    #     groupMembers = re.search(r'\((\d+)\)', numbePeopleText)
-    #     if self.groupMembers >= 200:
-    #         sys.exit()
 
     def checkMembersCount(self):
         try:
@@ -461,14 +433,15 @@ class ViberAutoGroups:
                         time.sleep(2)
                         self.device.press("home")
                         self.run()# 重新执行 run 方法，进入新的群并发送第二个群链接
-
                 else:
                     logging.warning("未能解析群成员数，文本格式可能不正确")
                     sys.exit()
 
             else:
                 logging.warning("未找到群成员数文本元素")
-                sys.exit()
+                self.close_current_app()  # 关闭应用
+                self.run()  # 重新执行 run 方法
+
         except Exception as e:
             logging.error(f"检查群成员数时发生错误: {e}")
             sys.exit()
@@ -488,34 +461,24 @@ class ViberAutoGroups:
             if self.line_number > len(links):
                 # logging.warning(f"当前行：{self.line_number}; 超出文件行数，无法读取更多数据")
                 logging.warning(f"当前行：{self.line_number}; 群已拉完，结束程序")
+                sys.exit()                # 终止程序
 
-                # 终止程序
-                sys.exit()
-
-            # 读取指定行
-            link = links[self.line_number - 1]
-
+            link = links[self.line_number - 1] # 读取指定行
             text_box = self.device(resourceId="com.viber.voip:id/send_text")
             if text_box.exists(timeout=2):
                 text_box.set_text(link)
-
-
                 logging.info(f"当前行：{self.line_number}; 输入文本: {link}")
                 time.sleep(0.05)
-
                 send_button = self.device(resourceId="com.viber.voip:id/btn_send")
                 if send_button.exists:
                     send_button.click()
                     logging.info(f"当前行：{self.line_number}; 点击发送")
                     # 需要多等一会儿，这个元素显示不会这么快
                     time.sleep(5)
-
                     element = self.device.xpath(
                         '//*[@resource-id="com.viber.voip:id/conversation_recycler_view"]/*[last()]//*[@resource-id="com.viber.voip:id/myNotesCheckView"]')
-
                     if element.exists:
                         logging.info("链接发送至记事本成功")
-
                     else:
                         logging.warning("链接发送至记事本失败，账号异常，正在关闭应用")
                         self.close_current_app()  # 关闭应用
@@ -526,6 +489,27 @@ class ViberAutoGroups:
                 logging.warning(f"当前行：{self.line_number}; 未找到输入框")
         except Exception as e:
             logging.error(f"当前行：{self.line_number}; 读取链接文件失败: {e}")
+
+def set_num_to_input():
+    """获取用户输入的电话号码数量，并存储到全局变量 NUM_TO_INPUT"""
+    global NUM_TO_INPUT  # 声明使用全局变量
+
+    while True:
+        user_input = input("\n请输入要输入的电话号码数量（默认 45，直接回车可跳过）: ").strip()
+        if user_input == "":
+            NUM_TO_INPUT = 45  # 用户未输入时，默认为 45
+            break
+        try:
+            num = int(user_input)
+            if num > 0:
+                NUM_TO_INPUT = num
+                break
+            else:
+                print("❌ 请输入大于 0 的数字")
+        except ValueError:
+            print("❌ 请输入有效的数字")
+
+    logging.info(f"用户设置的号码输入数量: {NUM_TO_INPUT}")
 
 
 def clear_txt_file(file_path):
@@ -543,6 +527,7 @@ def main():
     if not devices:
         logging.error("没有检测到任何设备，请检查连接状态。")
         return
+    set_num_to_input()
 
     logging.info("已连接的设备:")
     for device in devices:
@@ -554,9 +539,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-    # 新增check_group_entry方法，检测是否点击群链接成功
-    # 新增check_notepad_entry方法，检查点击我的便签是否成功
-    # 修改 checkMembersCount方法。连续 3 个号码输入错误，执行异常处理(问题处于解决中)
