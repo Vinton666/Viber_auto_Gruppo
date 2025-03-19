@@ -22,7 +22,7 @@ logging.basicConfig(
 
 class ViberAutoGroups:
     line_number = 1  # 默认读取第 1 行
-    NUM_TO_INPUT = None  # 默认未初始化
+    NUM_TO_INPUT = 45  # 默认未初始化
 
     # 初始化，链接手机
     def __init__(self, device_id, debug=False):
@@ -159,10 +159,6 @@ class ViberAutoGroups:
     # 重复id的时候，输入索引
     def click_if_exists2(self, resource_id, timeout=5, text_list=None):
         """等待并点击带有特定 resourceId 和 text 的 UI 元素"""
-        # 获取当前应用包名
-        # current_package = self.device.app_current().get('package', 'Unknown')
-
-
         for text in text_list:
            if self.click_text_view_if_exists(resource_id, text):
                return True
@@ -249,7 +245,7 @@ class ViberAutoGroups:
             time.sleep(5)
             self.close_current_app()  # 关闭应用
             self.device.press("home")  #返回桌面
-            self.run()      #重新执行循环
+            self.run()      #重新执行循环  #
 
     def detecting_account(self):
         """检测当前是否处于正常账号状态"""
