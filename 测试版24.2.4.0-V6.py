@@ -288,16 +288,17 @@ class ViberAutoGroups:
                     logging.warning(f" 找不到输入框，暂停输入电话号码")
 
                     # **持续检测是否出现 `alertTitle`**
-                    if self.device(resourceId="com.viber.voip:id/alertTitle").exists(timeout=2):
+                    if self.device(resourceId="com.viber.voip:id/alertTitle").exists(timeout=15):
                         logging.warning(f" 检测到号码问题，点击确认")
-                        if self.device(resourceId="com.viber.voip:id/alertTitle").exists(timeout=15):
+                        if self.device(resourceId="android:id/button1").exists(timeout=2):
                             logging.warning(f" 号码 {phone} 存在问题，计数 {error_count + 1}/3")
                             self.click_if_exists("android:id/button1")  # 点击确认
                             error_count += 1  # **错误计数 +1**
+                            invalid_numbers.append(phone)
                         else:
                             error_count = 0  # **如果号码有效，则错误计数归零**
                             logging.info(f"号码有效，当前号码{phone}")
-                        time.sleep(2)  # 等待 UI 更新
+                        time.sleep(1)  # 等待 UI 更新
                     check_time += 2  # 计时
                     # **如果超过 30 秒仍然没有输入框，执行异常处理**
                     if check_time >= 30:
@@ -347,7 +348,7 @@ class ViberAutoGroups:
                         logging.error(f" 连续 3 个号码输入错误，执行异常处理")
                         with open("无效号码.txt", "a", encoding="utf-8") as invalid_file:
                             for num in invalid_numbers:
-                                self.invalid_file.write(num + "\n")  # **记录无效号码**
+                                invalid_file.write(num + "\n")  # **记录无效号码**
                         logging.info("❌ 无效号码已保存到 '无效号码.txt'")
                         self.close_current_app()  # 关闭应用
                         time.sleep(2)
