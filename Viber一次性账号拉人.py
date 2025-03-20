@@ -294,7 +294,6 @@ class ViberAutoGroups:
                 check_time = 0  # 记录等待时间
                 while not phone_input.exists(timeout=2):
                     logging.warning(f" 找不到输入框，暂停输入电话号码")
-
                     # **持续检测是否出现 `alertTitle`**
                     if self.device(resourceId="com.viber.voip:id/alertTitle").exists(timeout=2):
                         logging.warning(f" 检测到 `alertTitle`，点击确认")
