@@ -474,7 +474,6 @@ def set_num_to_input():
 
     logging.info(f"用户设置的号码输入数量: {NUM_TO_INPUT}")
 
-
 def clear_txt_file(file_path):
     """清空 TXT 文件的内容"""
     try:
