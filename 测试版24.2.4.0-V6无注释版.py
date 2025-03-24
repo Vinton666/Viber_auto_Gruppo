@@ -195,8 +195,9 @@ class ViberAutoGroups:
             return
         if self.detecting_account():
             logging.info("账号正常")
-            self.click_if_exists("ix4s")  
-            self.click_if_exists("com.viber.voip:id/bottom_nav_tab_4")  
+            self.click_if_exists("ix4s")
+            self.click_if_exists("com.viber.voip:id/cta") #关广告
+            self.click_if_exists("com.viber.voip:id/bottom_nav_tab_4")   #点击更多
             self.click_if_exists("ix4s")    
             self.check_notepad_entry() 
             self.notConnected() 
