@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="614c5e1c-48e0-4404-ae84-3988ee83e969" name="更改" comment="最新版">
-      <change afterPath="$PROJECT_DIR$/测试版24.2.4.0-V7.py" afterDir="false" />
+    <list default="true" id="614c5e1c-48e0-4404-ae84-3988ee83e969" name="更改" comment="最新无注释版">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phone.txt" beforeDir="false" afterPath="$PROJECT_DIR$/phone.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/processed_packages.txt" beforeDir="false" afterPath="$PROJECT_DIR$/processed_packages.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/已使用的号码.txt" beforeDir="false" afterPath="$PROJECT_DIR$/已使用的号码.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,44 +52,44 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Node.js.网易云.js.executor&quot;: &quot;Run&quot;,
-    &quot;Python.12.executor&quot;: &quot;Run&quot;,
-    &quot;Python.1测试24.2.4.2.0.executor&quot;: &quot;Run&quot;,
-    &quot;Python.Viber一次性账号拉人.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.qun.executor&quot;: &quot;Run&quot;,
-    &quot;Python.scratch.executor&quot;: &quot;Run&quot;,
-    &quot;Python.测试版24.2.4.0-V6.executor&quot;: &quot;Run&quot;,
-    &quot;Python.测试版24.2.4.0-V7.executor&quot;: &quot;Run&quot;,
-    &quot;Python.测试版24.2.4.0-v2.executor&quot;: &quot;Run&quot;,
-    &quot;Python.测试版24.2.4.0-v3.executor&quot;: &quot;Run&quot;,
-    &quot;Python.测试版24.2.4.0-v4.executor&quot;: &quot;Run&quot;,
-    &quot;Python.测试版24.2.4.0-v5.executor&quot;: &quot;Run&quot;,
-    &quot;Python.测试版24.2.4.0-终极版.executor&quot;: &quot;Run&quot;,
-    &quot;Python.测试版24.2.4.0.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Administrator/Desktop/123&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;advanced.settings&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Node.js.网易云.js.executor": "Run",
+    "Python.12.executor": "Run",
+    "Python.1测试24.2.4.2.0.executor": "Run",
+    "Python.Viber一次性账号拉人.executor": "Run",
+    "Python.main.executor": "Debug",
+    "Python.qun.executor": "Run",
+    "Python.scratch.executor": "Run",
+    "Python.测试版24.2.4.0-V6.executor": "Run",
+    "Python.测试版24.2.4.0-V6无注释版.executor": "Run",
+    "Python.测试版24.2.4.0-V7.executor": "Run",
+    "Python.测试版24.2.4.0-v2.executor": "Run",
+    "Python.测试版24.2.4.0-v3.executor": "Run",
+    "Python.测试版24.2.4.0-v4.executor": "Run",
+    "Python.测试版24.2.4.0-v5.executor": "Run",
+    "Python.测试版24.2.4.0-终极版.executor": "Run",
+    "Python.测试版24.2.4.0.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "last_opened_file_path": "C:/Users/Administrator/Desktop/123",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "advanced.settings",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;ChangesTree.GroupingKeys&quot;: [
-      &quot;directory&quot;
+  "keyToStringList": {
+    "ChangesTree.GroupingKeys": [
+      "directory"
     ],
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/新建临时文件&quot;: [
-      &quot;PLAIN_TEXT&quot;
+    "com.intellij.ide.scratch.ScratchImplUtil$2/新建临时文件": [
+      "PLAIN_TEXT"
     ]
   }
-}</component>
+}]]></component>
   <component name="Push.Settings">
     <option name="SHOW_DETAILS_PANEL" value="false" />
   </component>
@@ -133,6 +129,7 @@
       <workItem from="1742468031555" duration="28708000" />
       <workItem from="1742558147026" duration="8227000" />
       <workItem from="1742818655339" duration="8000" />
+      <workItem from="1742818669754" duration="25094000" />
     </task>
     <task id="LOCAL-00001" summary="增加手动输入拉多少人功能">
       <option name="closed" value="true" />
@@ -270,7 +267,31 @@
       <option name="project" value="LOCAL" />
       <updated>1742583409313</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="最新版">
+      <option name="closed" value="true" />
+      <created>1742818693986</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1742818693986</updated>
+    </task>
+    <task id="LOCAL-00019" summary="最新无注释版">
+      <option name="closed" value="true" />
+      <created>1742820776561</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1742820776561</updated>
+    </task>
+    <task id="LOCAL-00020" summary="最新无注释版">
+      <option name="closed" value="true" />
+      <created>1742826710458</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1742826710458</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -309,13 +330,14 @@
     <MESSAGE value="我忘记改了什么了" />
     <MESSAGE value="一个账号只拉一次群" />
     <MESSAGE value="最新版" />
-    <option name="LAST_COMMIT_MESSAGE" value="最新版" />
+    <MESSAGE value="最新无注释版" />
+    <option name="LAST_COMMIT_MESSAGE" value="最新无注释版" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/24_2_4_0_v2_py$24_2_4_0_v3.coverage" NAME="测试版24.2.4.0-v3 覆盖结果" MODIFIED="1741604897988" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/24_2_4_0_v5_py$24_2_4_0_.coverage" NAME="测试版24.2.4.0-终极版 覆盖结果" MODIFIED="1741975997757" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/24_2_4_0_v5_py$24_2_4_0_v5.coverage" NAME="测试版24.2.4.0-v5 覆盖结果" MODIFIED="1741975808647" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/24_2_4_0_V6_py$24_2_4_0_V6.coverage" NAME="测试版24.2.4.0-V6 覆盖结果" MODIFIED="1742495755114" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/24_2_4_0_V6_py$24_2_4_0_V6.coverage" NAME="测试版24.2.4.0-V6 覆盖结果" MODIFIED="1742906836377" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/24_2_4_0_V6_py$Viber.coverage" NAME="Viber一次性账号拉人 覆盖结果" MODIFIED="1742306457527" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/24_2_4_0_v4_py$24_2_4_0_v4.coverage" NAME="测试版24.2.4.0-v4 覆盖结果" MODIFIED="1741629791806" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/24_2_4_0_V6_py$12.coverage" NAME="12 覆盖结果" MODIFIED="1742303916201" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

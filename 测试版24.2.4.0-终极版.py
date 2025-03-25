@@ -446,11 +446,11 @@ def main():
         logging.error("没有检测到任何设备，请检查连接状态。")
         return
 
-    logging.info("已连接的设备:") 
+    logging.info("已连接的设备:")
     for device in devices:
         logging.info(f"设备序列号: {device.serial}")
 
-    logging.info(f"启动设备: {devices[0]}")  
+    logging.info(f"启动设备: {devices[0]}")
     viber_auto = ViberAutoGroups(devices[0], debug=True)
     viber_auto.run()
 

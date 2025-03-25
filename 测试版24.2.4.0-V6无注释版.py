@@ -6,6 +6,7 @@ import re
 import inspect
 import sys
 import  os
+
 app_name = os.path.splitext(os.path.basename(__file__))[0]
 log_filename = f"{app_name}_{time.strftime('%Y-%m-%d_%H-%M-%S')}.log"
 logging.basicConfig(
@@ -18,7 +19,7 @@ logging.basicConfig(
 )
 class ViberAutoGroups:
     line_number = 1  
-    NUM_TO_INPUT = 45  
+    NUM_TO_INPUT = 45
     
     def __init__(self, device_id, debug=False):
         self.device_id = device_id
@@ -29,8 +30,8 @@ class ViberAutoGroups:
         
         self.message_sent_status = 1  
         self.processed_packages = set()
-        self.phone_counter = 0  
-    
+        self.phone_counter = 0
+
     def load_processed_packages(self):
         try:
             with open('processed_packages.txt', 'r', encoding='utf-8') as f:  
@@ -52,7 +53,7 @@ class ViberAutoGroups:
         
         output_str = shell_response.output if hasattr(shell_response, "output") else str(shell_response)
         dkplugin_packages = {line.split(":")[-1] for line in output_str.split("\n") if 'dkplugin' in line}
-        dkplugin_packages -= self.processed_packages  
+        dkplugin_packages -= self.processed_packages
         if dkplugin_packages:
             self.first_pkg = list(dkplugin_packages)[0]
             logging.info(f"打开应用: {self.first_pkg}")
@@ -203,16 +204,13 @@ class ViberAutoGroups:
             self.notConnected() 
             self.click_if_exists("com.viber.voip:id/close")  
             time.sleep(2)
-            self.send_link_text("link.txt") 
-            
+            self.send_link_text("link.txt")
             time.sleep(2)
-            
             self.check_group_entry()         
             self.click_if_exists("com.viber.voip:id/toolbar") 
             self.checkMembersCount()    
             self.click_if_exists("com.viber.voip:id/icon") 
             time.sleep(2)
-            
             self.enter_phone_numbers("phone.txt", "已使用的号码.txt")
         else:
             logging.warning("检测到账号异常，返回桌面并切换应用")
@@ -280,20 +278,18 @@ class ViberAutoGroups:
                                 invalid_numbers.append(phone)
                                 logging.warning(f" 号码 {phone} 存在问题，计数 {error_count + 1}/3")
                                 self.click_if_exists("android:id/button1")  
-                                error_count += 1  
-                            else:
-                                error_count = 0  
-                                logging.info(f"号码有效，当前号码{phone}")
-                            time.sleep(1)  
-                        check_time += 2  
-                        
+                                error_count += 1
+                            time.sleep(1)
+                        check_time += 2
+
                         if check_time >= 30:
                             logging.error(f" 超过 30 秒未找到输入框，执行异常处理")
                             self.close_current_app()  
                             time.sleep(2)
                             self.device.press("home")  
-                            self.run()  
-                    
+                            self.run()
+                    error_count = 0
+
                     if error_count >= 3:
                         logging.error(f" 连续 3 个号码输入错误，执行异常处理")
                         with open("无效号码.txt", "a", encoding="utf-8") as invalid_file:
@@ -426,6 +422,7 @@ def set_num_to_input():
         except ValueError:
             print("❌ 请输入有效的数字")
     logging.info(f"用户设置的号码输入数量: {NUM_TO_INPUT}")
+
 def clear_txt_file(file_path):
     """清空 TXT 文件的内容"""
     try:

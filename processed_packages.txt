@@ -1,1 +1,2 @@
-dkplugin.hih.ehr
+dkplugin.oxf.xbu
+dkplugin.kpc.jxq

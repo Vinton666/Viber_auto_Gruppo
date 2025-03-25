@@ -55,7 +55,7 @@ class ViberAutoGroups:
         dkplugin_packages -= self.processed_packages  
         if dkplugin_packages:
             self.first_pkg = list(dkplugin_packages)[0]
-            logging.info(f"打开应用: {self.first_pkg}")
+            logging.info(f"打开应用: {self.firsPACKAGES_ARRt_pkg}")
             self.device.app_start(self.first_pkg)
             time.sleep(3)
             self.processed_packages.add(self.first_pkg)
@@ -314,10 +314,10 @@ class ViberAutoGroups:
                              
                             if self.device(resourceId="android:id/button1").exists(timeout=15):
                                 logging.info("检测到确认按钮 'android:id/button1'，点击继续")
-                                self.click_if_exists("android:id/button1")  
+                                self.click_if_exists("android:id/button1")
                             elif self.device(resourceId="com.viber.voip:id/body").exists(timeout=10):
                                 logging.error("检测到 'com.viber.voip:id/body'，账号异常，执行异常处理")
-                                time.sleep(50)
+                                time.sleep(5)
                                 self.close_current_app()  
                                 time.sleep(2)
                                 self.run()  
@@ -329,6 +329,9 @@ class ViberAutoGroups:
                                 logging.info("成功返回到群管理界面，继续拉群")
                             else:
                                 logging.warning("未能找到 'com.viber.voip:id/icon'，可能需要手动调整")
+                                self.close_current_app()
+                                time.sleep(2)
+                                self.run()
                 else:
                     
                     logging.info(f" 已处理的号码保存到 {used_file}")
